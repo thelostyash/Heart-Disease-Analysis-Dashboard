@@ -1,0 +1,75 @@
+-- Count of Patients by Gender
+SELECT 
+    sex, 
+    COUNT(*) AS total_patients
+FROM heart_disease
+GROUP BY sex
+
+-- Average Ejection Fraction by Death Event
+SELECT 
+    DEATH_EVENT, 
+    AVG(ejection_fraction) AS avg_ejection_fraction
+FROM heart_disease
+GROUP BY DEATH_EVENT
+
+-- Top 5 patients with the highest creatinine phosphokinase levels
+SELECT 
+    age, 
+    creatinine_phosphokinase, 
+    DEATH_EVENT
+FROM heart_disease
+ORDER BY creatinine_phosphokinase DESC
+LIMIT 5
+
+-- Percentage of patients with high blood pressure
+SELECT 
+    ROUND(
+        100.0 * SUM(CASE WHEN high_blood_pressure = 1 THEN 1 ELSE 0 END) / COUNT(*), 2
+    ) AS high_bp_percentage
+FROM heart_disease
+
+-- Average platelets count for diabetic vs non-diabetic patients
+SELECT 
+    diabetes, 
+    AVG(platelets) AS avg_platelets
+FROM heart_disease
+GROUP BY diabetes
+
+-- Death rate by smoking status
+SELECT 
+    smoking, 
+    ROUND(100.0 * AVG(DEATH_EVENT), 2) AS death_rate_percentage
+FROM heart_disease
+GROUP BY smoking
+
+-- Patients grouped by serum sodium range
+SELECT 
+    CASE 
+        WHEN serum_sodium < 130 THEN 'Low'
+        WHEN serum_sodium BETWEEN 130 AND 140 THEN 'Normal'
+        ELSE 'High'
+    END AS sodium_level,
+    COUNT(*) AS patient_count
+FROM heart_disease
+GROUP BY sodium_level
+
+-- Correlation check: average time survived by death status
+SELECT 
+    DEATH_EVENT, 
+    AVG(time) AS avg_survival_time_days
+FROM heart_disease
+GROUP BY DEATH_EVENT
+
+--  Number of anaemic patients who died
+SELECT 
+    COUNT(*) AS anaemic_deaths
+FROM heart_disease
+WHERE anaemia = 1 AND DEATH_EVENT = 1
+
+-- Average creatinine levels by sex and death outcome
+SELECT 
+    sex,
+    DEATH_EVENT,
+    AVG(serum_creatinine) AS avg_creatinine
+FROM heart_disease
+GROUP BY sex, DEATH_EVENT
